@@ -301,7 +301,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             counterPeople();
             widthRec = facesArray[i].width;
             Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
-                FACE_RECT_COLOR, 3);
+                    FACE_RECT_COLOR, 3);
             xCenter = (facesArray[i].x + facesArray[i].width + facesArray[i].x) / 2;
             yCenter = (facesArray[i].y + facesArray[i].y + facesArray[i].height) / 2;
             Point center = new Point(xCenter, yCenter);
@@ -335,89 +335,89 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
                     // In this else it is necessary to evaluate if the previous detected frame has in common
                     // similar coordinates with the new capture
-                   int sizeArray = 1;
+                    int sizeArray = 1;
 
-                   int lastPosition = 0;
-                   lastPosition = personTestCoordinates.size() - 1;
-                   int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
-                   int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // last value of the vertical coordinate
-                   int actualVertical = myPersonCoordinate.getVertical();
-                   int actualHorizontal = myPersonCoordinate.getHorizontal();
+                    int lastPosition = 0;
+                    lastPosition = personTestCoordinates.size() - 1;
+                    int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
+                    int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // last value of the vertical coordinate
+                    int actualVertical = myPersonCoordinate.getVertical();
+                    int actualHorizontal = myPersonCoordinate.getHorizontal();
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
-                   if(actualVertical >= lastVertical - 40 && actualVertical <= lastVertical + 40 && actualHorizontal >= lastHorizontal - 40 && actualHorizontal <= lastHorizontal + 40) {
+                    if(actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
 
-                       if(actualHorizontal > 800) {
-                           zone8 = 1;
-                       }
+                        if(actualHorizontal > 800) {
+                            zone8 = 1;
+                        }
 
-                       if(actualHorizontal > 700 && actualHorizontal < 800) {
-                           zone7 = 1;
-                       }
+                        if(actualHorizontal > 700 && actualHorizontal < 800) {
+                            zone7 = 1;
+                        }
 
-                       if(actualHorizontal > 600 && actualHorizontal < 700 ) {
-                           zone6 = 1;
-                       }
+                        if(actualHorizontal > 600 && actualHorizontal < 700 ) {
+                            zone6 = 1;
+                        }
 
-                       if(actualHorizontal > 500 && actualHorizontal < 600 ) {
-                           zone5 = 1;
-                       }
+                        if(actualHorizontal > 500 && actualHorizontal < 600 ) {
+                            zone5 = 1;
+                        }
 
-                       if(actualHorizontal > 400 && actualHorizontal < 500) {
-                           zone4 = 1;
-                       }
+                        if(actualHorizontal > 400 && actualHorizontal < 500) {
+                            zone4 = 1;
+                        }
 
-                       if(actualHorizontal > 300 && actualHorizontal < 400) {
-                           zone3 = 1;
-                       }
+                        if(actualHorizontal > 300 && actualHorizontal < 400) {
+                            zone3 = 1;
+                        }
 
-                       if(actualHorizontal > 200 && actualHorizontal < 300) {
-                           zone2 = 1;
-                       }
+                        if(actualHorizontal > 200 && actualHorizontal < 300) {
+                            zone2 = 1;
+                        }
 
-                       if(actualHorizontal < 100) {
-                           zone1 = 1;
-                       }
+                        if(actualHorizontal < 100) {
+                            zone1 = 1;
+                        }
 
-                       // Here comes coordinated which belongs to the real object detected
-                       counterFrames++;
-                       personTestCoordinates.add(myPersonCoordinate);
-                       if(actualHorizontal < 350) {
-                           evaluateUpPassager();
-                           // function to evaluate
-                       }
+                        // Here comes coordinated which belongs to the real object detected
+                        counterFrames++;
+                        personTestCoordinates.add(myPersonCoordinate);
+                        if(actualHorizontal < 350) {
+                            evaluateUpPassager();
+                            // function to evaluate
+                        }
 
-                       if(actualHorizontal > 650) {
-                           evaluateDownPassager();
-                           // function to evaluate
-                       }
-
-
-                       widthRecSaved = widthRec;
-
-                       // counterW ++;
-                   } else {
+                        if(actualHorizontal > 650) {
+                            evaluateDownPassager();
+                            // function to evaluate
+                        }
 
 
-                       counterRefresh++;
+                        widthRecSaved = widthRec;
 
-                       if (counterRefresh > 30) {
-                           personTestCoordinates.clear();
-                           counterRefresh = 0;
-                           counterFrames = 0;
-                           zone1 = 0;
-                           zone2 = 0;
-                           zone3 = 0;
-                           zone4 = 0;
-                           zone5 = 0;
-                           zone6 = 0;
-                           zone7 = 0;
-                           zone8 = 0;
-                           zone9 = 0;
-                       }
-                       // Un contador que si llega a cierto numero dispara el evento de limpiar el array
+                        // counterW ++;
+                    } else {
 
-                   }
+
+                        counterRefresh++;
+
+                        if (counterRefresh > 30) {
+                            personTestCoordinates.clear();
+                            counterRefresh = 0;
+                            counterFrames = 0;
+                            zone1 = 0;
+                            zone2 = 0;
+                            zone3 = 0;
+                            zone4 = 0;
+                            zone5 = 0;
+                            zone6 = 0;
+                            zone7 = 0;
+                            zone8 = 0;
+                            zone9 = 0;
+                        }
+                        // Un contador que si llega a cierto numero dispara el evento de limpiar el array
+
+                    }
                 }
             }
 
@@ -455,7 +455,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     public void evaluateDownPassager() {
 
         int average = (zone1 + zone2 + zone3 + zone4 +zone5);
-        if(average >=  3) {
+        if(average >=  1) {
             counterDown++;
             personTestCoordinates.clear();
             counterFrames = 0;
@@ -475,7 +475,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     public void evaluateUpPassager() {
 
         int average = (zone8 + zone7 + zone6 + zone5 +zone4);
-        if(average >=  3) {
+        if(average >=  1) {
             counterUp++;
             personTestCoordinates.clear();
             counterFrames = 0;
