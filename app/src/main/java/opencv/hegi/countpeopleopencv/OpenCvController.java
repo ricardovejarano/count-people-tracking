@@ -101,9 +101,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
                     try {
                         // load cascade file from application resources
-                        InputStream is = getResources().openRawResource(R.raw.lbpcascade_frontalface);
+                        InputStream is = getResources().openRawResource(R.raw.haarcascade_frontalface_alt2);
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+                        mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_alt2.xml");
                         FileOutputStream os = new FileOutputStream(mCascadeFile);
 
                         byte[] buffer = new byte[1024];
@@ -276,8 +276,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-
-
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
             if (Math.round(height * mRelativeFaceSize) > 0) {
@@ -298,7 +296,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
         Rect[] facesArray = faces.toArray();
         for (int i = 0; i < facesArray.length; i++) {
-            counterPeople();
             widthRec = facesArray[i].width;
             Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
                     FACE_RECT_COLOR, 3);
@@ -345,7 +342,8 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                     int actualHorizontal = myPersonCoordinate.getHorizontal();
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
-                    if(actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
+                    if(actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80)
+                    {
 
                         if(actualHorizontal > 800) {
                             zone8 = 1;
@@ -387,17 +385,14 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                             // function to evaluate
                         }
 
-                        if(actualHorizontal > 650) {
+                        if(actualHorizontal > 600) {
                             evaluateDownPassager();
                             // function to evaluate
                         }
 
-
                         widthRecSaved = widthRec;
 
-                        // counterW ++;
                     } else {
-
 
                         counterRefresh++;
 
@@ -421,33 +416,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                 }
             }
 
-
-            if(personTestCoordinates.size() == 10) {
-                // counterW ++;
-            }
-
-
-            Rect r = facesArray[i];
-            // compute the eye area
-            Rect eyearea = new Rect(r.x + r.width / 8,
-                    (int) (r.y + (r.height / 4.5)), r.width - 2 * r.width / 8,
-                    (int) (r.height / 3.0));
-            // split it
-            Rect eyearea_right = new Rect(r.x + r.width / 16,
-                    (int) (r.y + (r.height / 4.5)),
-                    (r.width - 2 * r.width / 16) / 2, (int) (r.height / 3.0));
-            Rect eyearea_left = new Rect(r.x + r.width / 16
-                    + (r.width - 2 * r.width / 16) / 2,
-                    (int) (r.y + (r.height / 4.5)),
-                    (r.width - 2 * r.width / 16) / 2, (int) (r.height / 3.0));
-            // draw the area - mGray is working grayscale mat, if you want to
-            // see area in rgb preview, change mGray to mRgba
-            Imgproc.rectangle(mRgba, eyearea_left.tl(), eyearea_left.br(),
-                    new Scalar(255, 0, 0, 255), 2);
-            Imgproc.rectangle(mRgba, eyearea_right.tl(), eyearea_right.br(),
-                    new Scalar(255, 0, 0, 255), 2);
         }
-
         return mRgba;
     }
 
@@ -490,46 +459,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             zone8 = 0;
             zone9 = 0;
         }
-    }
-
-    public void counterPeople() {
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.i(TAG, "called onCreateOptionsMenu");
-        mItemFace50 = menu.add("Face size 50%");
-        mItemFace40 = menu.add("Face size 40%");
-        mItemFace30 = menu.add("Face size 30%");
-        mItemFace20 = menu.add("Face size 20%");
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(TAG, "called onOptionsItemSelected; selected item: " + item);
-        if (item == mItemFace50)
-            setMinFaceSize(0.5f);
-        else if (item == mItemFace40)
-            setMinFaceSize(0.4f);
-        else if (item == mItemFace30)
-            setMinFaceSize(0.3f);
-        else if (item == mItemFace20)
-            setMinFaceSize(0.2f);
-
-        return true;
-    }
-
-    private void setMinFaceSize(float faceSize) {
-        mRelativeFaceSize = faceSize;
-        mAbsoluteFaceSize = 0;
-    }
-
-    public void onRecreateClick(View v)
-    {
-        learn_frames = 0;
     }
 
 
