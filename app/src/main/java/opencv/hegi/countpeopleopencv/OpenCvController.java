@@ -127,7 +127,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                         Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
                     }
                     mOpenCvCameraView.enableFpsMeter();
-                    mOpenCvCameraView.setCameraIndex(0);
+                    mOpenCvCameraView.setCameraIndex(1);
                     mOpenCvCameraView.enableView();
                 } break;
                 default:
