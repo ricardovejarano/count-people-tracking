@@ -390,35 +390,27 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
                     if (actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
-
                         if (actualHorizontal > 800) {
                             zone8 = 1;
                         }
-
                         if (actualHorizontal > 700 && actualHorizontal < 800) {
                             zone7 = 1;
                         }
-
                         if (actualHorizontal > 600 && actualHorizontal < 700) {
                             zone6 = 1;
                         }
-
                         if (actualHorizontal > 500 && actualHorizontal < 600) {
                             zone5 = 1;
                         }
-
                         if (actualHorizontal > 400 && actualHorizontal < 500) {
                             zone4 = 1;
                         }
-
                         if (actualHorizontal > 300 && actualHorizontal < 400) {
                             zone3 = 1;
                         }
-
                         if (actualHorizontal > 200 && actualHorizontal < 300) {
                             zone2 = 1;
                         }
-
                         if (actualHorizontal < 100) {
                             zone1 = 1;
                         }
@@ -463,6 +455,124 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             }
 
         }
+
+        for (int i = 0; i < facesArray2.length; i++) {
+            Log.e("FacesArray", String.valueOf(facesArray2.length));
+            widthRec = facesArray2[i].width;
+            Imgproc.rectangle(mRgba, facesArray2[i].tl(), facesArray2[i].br(),
+                    FACE_RECT_COLOR, 3);
+            xCenter = (facesArray2[i].x + facesArray2[i].width + facesArray2[i].x) / 2;
+            yCenter = (facesArray2[i].y + facesArray2[i].y + facesArray2[i].height) / 2;
+            Point center = new Point(xCenter, yCenter);
+
+            Imgproc.circle(mRgba, center, 10, new Scalar(255, 0, 0, 255), 3);
+
+            Imgproc.putText(mRgba, "[" + center.x + "," + center.y + "]",
+                    new Point(center.x + 20, center.y + 20),
+                    Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
+                            255));
+
+            // La variable myPersonCoordinate guarda las coordenadas X,Y por cada ciclo de detección
+            PersonCoordinate myPersonCoordinate = new PersonCoordinate();
+
+
+            myPersonCoordinate.setHorizontal(facesArray2[i].x);
+            myPersonCoordinate.setVertical(facesArray2[i].y);
+
+
+            // En esta sección se verifica primero si existe algún dato en la
+            // variable personCoordenade.  Si no hay componente en ella, se empieza a
+            // llenar el array testArray para verificar que no es ruido
+            // luego, si se define que esos frames captados no son ruido, el contenido del
+            // array temporal se pasa al array de tracking final ==> personCoordinate
+            if (personCoordinates.size() != 0) {
+                // personCoordinates.add(myPersonCoordinate);
+            } else {
+                if (personTestCoordinates.size() == 0) {
+                    personTestCoordinates.add(myPersonCoordinate);
+                } else {
+
+                    // In this else it is necessary to evaluate if the previous detected frame has in common
+                    // similar coordinates with the new capture
+                    int sizeArray = 1;
+
+                    int lastPosition = 0;
+                    lastPosition = personTestCoordinates.size() - 1;
+                    int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
+                    int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // last value of the vertical coordinate
+                    int actualVertical = myPersonCoordinate.getVertical();
+                    int actualHorizontal = myPersonCoordinate.getHorizontal();
+
+                    // This conditional determine if the actual vertical value is near of the pervious value saved
+                    if (actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
+                        if (actualHorizontal > 800) {
+                            zone8 = 1;
+                        }
+                        if (actualHorizontal > 700 && actualHorizontal < 800) {
+                            zone7 = 1;
+                        }
+                        if (actualHorizontal > 600 && actualHorizontal < 700) {
+                            zone6 = 1;
+                        }
+                        if (actualHorizontal > 500 && actualHorizontal < 600) {
+                            zone5 = 1;
+                        }
+                        if (actualHorizontal > 400 && actualHorizontal < 500) {
+                            zone4 = 1;
+                        }
+                        if (actualHorizontal > 300 && actualHorizontal < 400) {
+                            zone3 = 1;
+                        }
+                        if (actualHorizontal > 200 && actualHorizontal < 300) {
+                            zone2 = 1;
+                        }
+                        if (actualHorizontal < 100) {
+                            zone1 = 1;
+                        }
+
+                        // Here comes coordinated which belongs to the real object detected
+                        counterFrames++;
+                        personTestCoordinates.add(myPersonCoordinate);
+                        if (actualHorizontal < 350) {
+                            evaluateUpPassager();
+                            // function to evaluate
+                        }
+
+                        if (actualHorizontal > 600) {
+                            evaluateDownPassager();
+                            // function to evaluate
+                        }
+
+                        widthRecSaved = widthRec;
+
+                    } else {
+
+                        counterRefresh++;
+
+                        if (counterRefresh > 30) {
+                            personTestCoordinates.clear();
+                            counterRefresh = 0;
+                            counterFrames = 0;
+                            zone1 = 0;
+                            zone2 = 0;
+                            zone3 = 0;
+                            zone4 = 0;
+                            zone5 = 0;
+                            zone6 = 0;
+                            zone7 = 0;
+                            zone8 = 0;
+                            zone9 = 0;
+                        }
+                        // Un contador que si llega a cierto numero dispara el evento de limpiar el array
+
+                    }
+                }
+            }
+
+        }
+
+
+
         return mRgba;
     }
 
