@@ -32,9 +32,9 @@ import java.util.ArrayList;
 
 public class OpenCvController extends Activity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    private static final String    TAG                 = "OCVSample::Activity";
-    private static final Scalar    FACE_RECT_COLOR     = new Scalar(0, 255, 0, 255);
-    public static final int        JAVA_DETECTOR       = 0;
+    private static final String TAG = "OCVSample::Activity";
+    private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
+    public static final int JAVA_DETECTOR = 0;
     private int learn_frames = 0;
 
     int method = 0;
@@ -43,27 +43,30 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     private Mat mZoomWindow;
     private Mat mZoomWindow2;
 
-    private MenuItem               mItemFace50;
-    private MenuItem               mItemFace40;
-    private MenuItem               mItemFace30;
-    private MenuItem               mItemFace20;
+    private MenuItem mItemFace50;
+    private MenuItem mItemFace40;
+    private MenuItem mItemFace30;
+    private MenuItem mItemFace20;
     // private MenuItem               mItemType;
 
-    private Mat                    mRgba;
-    private Mat                    mGray;
-    private File                   mCascadeFile;
-    private File                   mCascadeFileEye;
-    private CascadeClassifier      mJavaDetector;
-    private CascadeClassifier      mJavaDetectorEye;
+    private Mat mRgba;
+    private Mat mGray;
+    private File mCascadeFile;
+    private File mCascadeFile2;
+    private File mCascadeFileEye;
+    private CascadeClassifier mJavaDetector;
+    private CascadeClassifier mJavaDetector2;
+    private CascadeClassifier mJavaDetectorEye;
 
 
-    private int                    mDetectorType       = JAVA_DETECTOR;
-    private String[]               mDetectorName;
+    private int mDetectorType = JAVA_DETECTOR;
+    private int mDetectorType2 = JAVA_DETECTOR;
+    private String[] mDetectorName;
 
-    private float                  mRelativeFaceSize   = 0.2f;
+    private float mRelativeFaceSize = 0.2f;
     private int mAbsoluteFaceSize = 0;
 
-    private CameraBridgeViewBase   mOpenCvCameraView;
+    private CameraBridgeViewBase mOpenCvCameraView;
 
     int counterUp = 0;
     int counterDown = 0;
@@ -90,21 +93,29 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     private int widthRecSaved = 0;
 
 
-
-    private BaseLoaderCallback  mLoaderCallback = new BaseLoaderCallback(this) {
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
+                case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
 
                     try {
-                        // load cascade file from application resources
-                        InputStream is = getResources().openRawResource(R.raw.haarcascade_frontalface_alt2);
+                        // Se carga el recurso de haar cascade
+                        InputStream is = getResources().openRawResource(R.raw.haarcascade_mcs_leftear);
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "haarcascade_frontalface_alt2.xml");
+                        mCascadeFile = new File(cascadeDir, "haarcascade_mcs_leftear.xml");
                         FileOutputStream os = new FileOutputStream(mCascadeFile);
+
+
+                        // segunda cascada ///////////
+
+                        // Se carga el recurso de haar cascade
+                        InputStream is2 = getResources().openRawResource(R.raw.haarcascade_profileface);
+                        File cascadeDir2 = getDir("cascade", Context.MODE_PRIVATE);
+                        mCascadeFile2 = new File(cascadeDir2, "haarcascade_profileface.xml");
+                        FileOutputStream os2 = new FileOutputStream(mCascadeFile2);
+
 
                         byte[] buffer = new byte[1024];
                         int bytesRead;
@@ -122,18 +133,37 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                             Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
                         cascadeDir.delete();
 
+                        byte[] buffer2 = new byte[1024];
+                        int bytesRead2;
+
+                        while ((bytesRead2 = is2.read(buffer2)) != -1) {
+                            os2.write(buffer2, 0, bytesRead2);
+                        }
+                        is2.close();
+                        os2.close();
+
+                        mJavaDetector2 = new CascadeClassifier(mCascadeFile2.getAbsolutePath());
+                        if (mJavaDetector2.empty()) {
+                            Log.e(TAG, "Failed to load cascade classifier");
+                            mJavaDetector2 = null;
+                        } else
+                            Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
+                        cascadeDir2.delete();
+
+
                     } catch (IOException e) {
                         e.printStackTrace();
                         Log.e(TAG, "Failed to load cascade. Exception thrown: " + e);
                     }
                     mOpenCvCameraView.enableFpsMeter();
-                    mOpenCvCameraView.setCameraIndex(1);
+                    mOpenCvCameraView.setCameraIndex(0);
                     mOpenCvCameraView.enableView();
-                } break;
-                default:
-                {
+                }
+                break;
+                default: {
                     super.onManagerConnected(status);
-                } break;
+                }
+                break;
             }
         }
     };
@@ -146,7 +176,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
@@ -160,16 +192,14 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
@@ -207,72 +237,72 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         int y2 = 620;
 
 
-        Imgproc.line(mRgba, new Point( x1, 0 ), new Point( x1, y1), new Scalar(255,0,0), 3);
-        Imgproc.line(mRgba, new Point( x2, 0 ), new Point( x2, y2), new Scalar(0,255,0), 3);
+        Imgproc.line(mRgba, new Point(x1, 0), new Point(x1, y1), new Scalar(255, 0, 0), 3);
+        Imgproc.line(mRgba, new Point(x2, 0), new Point(x2, y2), new Scalar(0, 255, 0), 3);
 
-        Imgproc.putText(mRgba,  "Contador Up: " + counterUp,
-                new Point( 20,  60),
+        Imgproc.putText(mRgba, "Contador Up: " + counterUp,
+                new Point(20, 60),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Contador Down: " + counterDown,
-                new Point( 20,  90),
+        Imgproc.putText(mRgba, "Contador Down: " + counterDown,
+                new Point(20, 90),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Frames: " + counterFrames,
-                new Point( 20,  120),
+        Imgproc.putText(mRgba, "Frames: " + counterFrames,
+                new Point(20, 120),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
         // =====================CONTADORES DE ZONAS ===========================================//
-        Imgproc.putText(mRgba,  "Zona1: " + zone1,
-                new Point( 20,  150),
+        Imgproc.putText(mRgba, "Zona1: " + zone1,
+                new Point(20, 150),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona2: " + zone2,
-                new Point( 20,  180),
+        Imgproc.putText(mRgba, "Zona2: " + zone2,
+                new Point(20, 180),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona3: " + zone3,
-                new Point( 20,  210),
+        Imgproc.putText(mRgba, "Zona3: " + zone3,
+                new Point(20, 210),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona4: " + zone4,
-                new Point( 20,  240),
+        Imgproc.putText(mRgba, "Zona4: " + zone4,
+                new Point(20, 240),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona5: " + zone5,
-                new Point( 20,  270),
+        Imgproc.putText(mRgba, "Zona5: " + zone5,
+                new Point(20, 270),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona6: " + zone6,
-                new Point( 20,  300),
+        Imgproc.putText(mRgba, "Zona6: " + zone6,
+                new Point(20, 300),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona7: " + zone7,
-                new Point( 20,  330),
+        Imgproc.putText(mRgba, "Zona7: " + zone7,
+                new Point(20, 330),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "Zona8: " + zone8,
-                new Point( 20,  360),
+        Imgproc.putText(mRgba, "Zona8: " + zone8,
+                new Point(20, 360),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "WIDTH: " + widthRec,
-                new Point( 20,  400),
+        Imgproc.putText(mRgba, "WIDTH: " + widthRec,
+                new Point(20, 400),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
-        Imgproc.putText(mRgba,  "REFRESH: " + counterRefresh,
-                new Point( 20,  430),
+        Imgproc.putText(mRgba, "REFRESH: " + counterRefresh,
+                new Point(20, 430),
                 Core.FONT_HERSHEY_SIMPLEX, 0.7, new Scalar(255, 255, 255,
                         255));
 
@@ -284,18 +314,35 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         }
 
         MatOfRect faces = new MatOfRect();
+        MatOfRect faces2 = new MatOfRect();
 
+
+        // Left
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
-                mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
-        }
-        else {
+                Log.e("detector1", "Entra a detector1");
+            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+        } else {
             Log.e(TAG, "Detection method is not selected!");
         }
 
+        // Perfil de rostro
+
+        if (mDetectorType2 == JAVA_DETECTOR) {
+            if (mJavaDetector2 != null)
+                Log.e("detector2", "Entra a detector2");
+                mJavaDetector2.detectMultiScale(mGray, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+        } else {
+            Log.e(TAG, "Detection method is not selected!");
+        }
+
+
         Rect[] facesArray = faces.toArray();
+        Rect[] facesArray2 = faces2.toArray();
         for (int i = 0; i < facesArray.length; i++) {
+            Log.e("FacesArray", String.valueOf(facesArray.length));
             widthRec = facesArray[i].width;
             Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
                     FACE_RECT_COLOR, 3);
@@ -323,10 +370,10 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             // llenar el array testArray para verificar que no es ruido
             // luego, si se define que esos frames captados no son ruido, el contenido del
             // array temporal se pasa al array de tracking final ==> personCoordinate
-            if(personCoordinates.size() != 0) {
+            if (personCoordinates.size() != 0) {
                 // personCoordinates.add(myPersonCoordinate);
             } else {
-                if(personTestCoordinates.size() == 0) {
+                if (personTestCoordinates.size() == 0) {
                     personTestCoordinates.add(myPersonCoordinate);
                 } else {
 
@@ -342,50 +389,49 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                     int actualHorizontal = myPersonCoordinate.getHorizontal();
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
-                    if(actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80)
-                    {
+                    if (actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
 
-                        if(actualHorizontal > 800) {
+                        if (actualHorizontal > 800) {
                             zone8 = 1;
                         }
 
-                        if(actualHorizontal > 700 && actualHorizontal < 800) {
+                        if (actualHorizontal > 700 && actualHorizontal < 800) {
                             zone7 = 1;
                         }
 
-                        if(actualHorizontal > 600 && actualHorizontal < 700 ) {
+                        if (actualHorizontal > 600 && actualHorizontal < 700) {
                             zone6 = 1;
                         }
 
-                        if(actualHorizontal > 500 && actualHorizontal < 600 ) {
+                        if (actualHorizontal > 500 && actualHorizontal < 600) {
                             zone5 = 1;
                         }
 
-                        if(actualHorizontal > 400 && actualHorizontal < 500) {
+                        if (actualHorizontal > 400 && actualHorizontal < 500) {
                             zone4 = 1;
                         }
 
-                        if(actualHorizontal > 300 && actualHorizontal < 400) {
+                        if (actualHorizontal > 300 && actualHorizontal < 400) {
                             zone3 = 1;
                         }
 
-                        if(actualHorizontal > 200 && actualHorizontal < 300) {
+                        if (actualHorizontal > 200 && actualHorizontal < 300) {
                             zone2 = 1;
                         }
 
-                        if(actualHorizontal < 100) {
+                        if (actualHorizontal < 100) {
                             zone1 = 1;
                         }
 
                         // Here comes coordinated which belongs to the real object detected
                         counterFrames++;
                         personTestCoordinates.add(myPersonCoordinate);
-                        if(actualHorizontal < 350) {
+                        if (actualHorizontal < 350) {
                             evaluateUpPassager();
                             // function to evaluate
                         }
 
-                        if(actualHorizontal > 600) {
+                        if (actualHorizontal > 600) {
                             evaluateDownPassager();
                             // function to evaluate
                         }
@@ -423,8 +469,8 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     // In this function it is validated if the person made the trip to get off the bus
     public void evaluateDownPassager() {
 
-        int average = (zone1 + zone2 + zone3 + zone4 +zone5);
-        if(average >=  1) {
+        int average = (zone1 + zone2 + zone3 + zone4 + zone5);
+        if (average >= 1) {
             counterDown++;
             personTestCoordinates.clear();
             counterFrames = 0;
@@ -443,8 +489,8 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
     public void evaluateUpPassager() {
 
-        int average = (zone8 + zone7 + zone6 + zone5 +zone4);
-        if(average >=  1) {
+        int average = (zone8 + zone7 + zone6 + zone5 + zone4);
+        if (average >= 1) {
             counterUp++;
             personTestCoordinates.clear();
             counterFrames = 0;
