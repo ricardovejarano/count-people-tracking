@@ -217,66 +217,66 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
         Imgproc.putText(mRgba, "Up: " + counterUp,
                 new Point(20, 60),
-                Core.FONT_HERSHEY_SIMPLEX, 1.6, new Scalar(0, 255, 0,
+                Core.FONT_HERSHEY_TRIPLEX, 1.8, new Scalar(0, 255, 0,
                         255));
         Imgproc.putText(mRgba, "Down: " + counterDown,
                 new Point((limitZones * 6) + 10, 60),
-                Core.FONT_HERSHEY_SIMPLEX, 1.6, new Scalar(255, 0, 0,
+                Core.FONT_HERSHEY_TRIPLEX, 1.8, new Scalar(255, 0, 0,
                         255));
         Imgproc.putText(mRgba, "Frames: " + counterFrames,
-                new Point(20, 120),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 130),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         // =====================CONTADORES DE ZONAS ===========================================//
         Imgproc.putText(mRgba, "Zona1: " + zone1,
-                new Point(20, 150),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 170),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona2: " + zone2,
-                new Point(20, 180),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 210),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona3: " + zone3,
-                new Point(20, 210),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 250),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona4: " + zone4,
-                new Point(20, 240),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 290),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona5: " + zone5,
-                new Point(20, 270),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 330),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona6: " + zone6,
-                new Point(20, 300),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 370),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona7: " + zone7,
-                new Point(20, 330),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 410),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona8: " + zone8,
-                new Point(20, 360),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 450),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "WIDTH: " + widthRec,
-                new Point(20, 390),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 490),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
 
         Imgproc.putText(mRgba, "REFRESH: " + counterRefresh,
-                new Point(20, 420),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
+                new Point(20, 530),
+                Core.FONT_HERSHEY_DUPLEX, 1, new Scalar(0, 0, 255,
                         255));
         //============================ FIN DE LA SECCIÓN DBT ==========================================================//
 
