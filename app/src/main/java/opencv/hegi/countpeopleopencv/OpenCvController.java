@@ -405,8 +405,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         //================================== CICLO PARA EL PERFIL DERECHO ====================================//
         for (int i = 0; i < facesArray2.length; i++) {
             int xx = widthResolution - facesArray2[i].x;
-            double xbien = Math.abs(xx);
-            Log.e("FacesArrayX", String.valueOf(xbien));
+            double xbien = Math.abs(xx); // El valor absoluto permite el correcto seguimiento de los frames
             Point tlAbs = new Point(Math.abs(widthResolution - facesArray2[i].tl().x), facesArray2[i].tl().y);
             Point brAbs = new Point(Math.abs(widthResolution - facesArray2[i].br().x), facesArray2[i].br().y);
             Imgproc.rectangle(mRgba, tlAbs, brAbs,
@@ -425,78 +424,59 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             // La variable myPersonCoordinate guarda las coordenadas X,Y por cada ciclo de detección
             PersonCoordinate myPersonCoordinate = new PersonCoordinate();
 
-
             myPersonCoordinate.setHorizontal(xx);
             myPersonCoordinate.setVertical(facesArray2[i].y);
 
-
-            if (personCoordinates.size() != 0) {
-                // personCoordinates.add(myPersonCoordinate);
+            if (personTestCoordinates.size() == 0) {
+                personTestCoordinates.add(myPersonCoordinate);
             } else {
-                if (personTestCoordinates.size() == 0) {
+                int lastPosition = personTestCoordinates.size() - 1;
+                int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
+                int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // last value of the vertical coordinate
+                int actualVertical = myPersonCoordinate.getVertical();
+                int actualHorizontal = myPersonCoordinate.getHorizontal();
+
+                // This conditional determine if the actual vertical value is near of the pervious value saved
+                if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
+                    if (actualHorizontal > limitZones * 7) {
+                        zone8 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 6 && actualHorizontal < limitZones * 7) {
+                        zone7 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 5 && actualHorizontal < limitZones * 6) {
+                        zone6 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 4 && actualHorizontal < limitZones * 5) {
+                        zone5 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 3 && actualHorizontal < limitZones * 4) {
+                        zone4 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 2 && actualHorizontal < limitZones * 3) {
+                        zone3 = 1;
+                    }
+                    if (actualHorizontal > limitZones && actualHorizontal < limitZones * 2) {
+                        zone2 = 1;
+                    }
+                    if (actualHorizontal < limitZones) {
+                        zone1 = 1;
+                    }
+                    counterFrames++;
                     personTestCoordinates.add(myPersonCoordinate);
+                    if (actualHorizontal > (limitZones * 11) / 2) {
+                        evaluateDownPassager(); // function to evaluate
+                    }
+
+                    widthRecSaved = widthRec;
+
                 } else {
-
-                    // In this else it is necessary to evaluate if the previous detected frame has in common
-                    // similar coordinates with the new capture
-                    int sizeArray = 1;
-
-                    int lastPosition = 0;
-                    lastPosition = personTestCoordinates.size() - 1;
-                    int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
-                    int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // last value of the vertical coordinate
-                    int actualVertical = myPersonCoordinate.getVertical();
-                    int actualHorizontal = myPersonCoordinate.getHorizontal();
-
-                    // This conditional determine if the actual vertical value is near of the pervious value saved
-                    if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
-                        if (actualHorizontal > limitZones * 7) {
-                            zone8 = 1;
-                        }
-                        if (actualHorizontal > limitZones * 6 && actualHorizontal < limitZones * 7) {
-                            zone7 = 1;
-                        }
-                        if (actualHorizontal > limitZones * 5 && actualHorizontal < limitZones * 6) {
-                            zone6 = 1;
-                        }
-                        if (actualHorizontal > limitZones * 4 && actualHorizontal < limitZones * 5) {
-                            zone5 = 1;
-                        }
-                        if (actualHorizontal > limitZones * 3 && actualHorizontal < limitZones * 4) {
-                            zone4 = 1;
-                        }
-                        if (actualHorizontal > limitZones * 2 && actualHorizontal < limitZones * 3) {
-                            zone3 = 1;
-                        }
-                        if (actualHorizontal > limitZones * 1 && actualHorizontal < limitZones * 2) {
-                            zone2 = 1;
-                        }
-                        if (actualHorizontal < limitZones * 1) {
-                            zone1 = 1;
-                        }
-
-                        // Here comes coordinated which belongs to the real object detected
-                        counterFrames++;
-                        personTestCoordinates.add(myPersonCoordinate);
-
-                        if (actualHorizontal > (limitZones * 11) / 2) {
-                            evaluateDownPassager();
-                            // function to evaluate
-                        }
-
-                        widthRecSaved = widthRec;
-
-                    } else {
-
-                        counterRefresh++;
-
-                        if (counterRefresh > 30) {
-                            personTestCoordinates.clear();
-                            counterRefresh = 0;
-                            counterFrames = 0;
-                            clearZones();
-                        }
-                        // Un contador que si llega a cierto numero dispara el evento de limpiar el array
+                    counterRefresh++;
+                    if (counterRefresh > 5) {
+                        personTestCoordinates.clear();
+                        counterRefresh = 0;
+                        counterFrames = 0;
+                        clearZones();
                     }
                 }
             }
