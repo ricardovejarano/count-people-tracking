@@ -359,7 +359,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                 int actualHorizontal = myPersonCoordinate.getHorizontal(); // Valor en la coordenada Y de la toma actual
 
                 // Se verifica que la detección actual está cerca por lo menos a  una distancia de la variable distance
-                int distance = 140;
+                int distance = 350;
                 if (actualVertical >= lastVertical - distance && actualVertical <= lastVertical + distance &&
                         actualHorizontal >= lastHorizontal - distance && actualHorizontal <= lastHorizontal + distance) {
                     if (actualHorizontal > limitZones * 7) {
@@ -444,7 +444,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                 int actualHorizontal = myPersonCoordinate.getHorizontal();
 
                 // This conditional determine if the actual vertical value is near of the pervious value saved
-                if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
+                int distance = 350;
+                if (actualVertical >= lastVertical - distance && actualVertical <= lastVertical + distance &&
+                        actualHorizontal >= lastHorizontal - distance && actualHorizontal <= lastHorizontal + distance) {
                     if (actualHorizontal > limitZones * 7) {
                         zone8 = 1;
                     }
