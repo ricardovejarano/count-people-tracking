@@ -74,7 +74,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     private int zone6 = 0;
     private int zone7 = 0;
     private int zone8 = 0;
-
+    private boolean canAdd = false;
     private int widthRec = 0;
     private int widthRecSaved = 0;
     private int widthResolution = 0;
@@ -346,8 +346,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             myPersonCoordinate.setVertical(facesArray[i].y);
 
 
-            if (personTestCoordinates.size() == 0) {
+            if (personTestCoordinates.size() == 0 || canAdd == true) {
                 personTestCoordinates.add(myPersonCoordinate);
+                canAdd = false;
             } else {
                 int lastPosition = personTestCoordinates.size() - 1; // Se encuentra el último indice del array personTestCoordinates
 
@@ -432,8 +433,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             myPersonCoordinate.setHorizontal(xx);
             myPersonCoordinate.setVertical(facesArray2[i].y);
 
-            if (personTestCoordinates.size() == 0) {
+            if (personTestCoordinates.size() == 0 || canAdd == true) {
                 personTestCoordinates.add(myPersonCoordinate);
+                canAdd = false;
             } else {
                 int lastPosition = personTestCoordinates.size() - 1;
                 int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
@@ -496,6 +498,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
        cameraFrameCounter++;
        if (cameraFrameCounter == 3) {
            cameraFrameCounter = 6;
+           canAdd = true;
        }
     }
 
