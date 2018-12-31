@@ -220,7 +220,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                         255));
 
         Imgproc.putText(mRgba, "Down: " + counterDown,
-                new Point(1050, 60),
+                new Point((limitZones*6)+ 10, 60),
                 Core.FONT_HERSHEY_SIMPLEX, 1.6, new Scalar(255, 0, 0,
                         255));
 
@@ -290,7 +290,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         MatOfRect faces = new MatOfRect();
         MatOfRect faces2 = new MatOfRect();
 
-
         // Left
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
@@ -301,17 +300,14 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             Log.e(TAG, "Detection method is not selected!");
         }
 
-        // Perfil de rostro
-
+        // Perfil  izquierdo
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
-                Log.e("detector2", "Entra a detector2");
             mJavaDetector.detectMultiScale(mGray2, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
-
 
         Rect[] facesArray = faces.toArray();
         Rect[] facesArray2 = faces2.toArray();
@@ -333,11 +329,8 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
             // La variable myPersonCoordinate guarda las coordenadas X,Y por cada ciclo de detección
             PersonCoordinate myPersonCoordinate = new PersonCoordinate();
-
-
             myPersonCoordinate.setHorizontal(facesArray[i].x);
             myPersonCoordinate.setVertical(facesArray[i].y);
-
 
             if (personCoordinates.size() != 0) {
                 // personCoordinates.add(myPersonCoordinate);
@@ -358,7 +351,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                     int actualHorizontal = myPersonCoordinate.getHorizontal();
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
-                    if (actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
+                    if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
                         if (actualHorizontal > limitZones*7) {
                             zone8 = 1;
                         }
@@ -392,11 +385,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                             // function to evaluate
                         }
 
-                        if (actualHorizontal > (limitZones*11)/2) {
-                            evaluateDownPassager();
-                            // function to evaluate
-                        }
-
                         widthRecSaved = widthRec;
 
                     } else {
@@ -424,6 +412,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
         }
 
+        // Perfil Derecho
         for (int i = 0; i < facesArray2.length; i++) {
             int xx = widthResolution - facesArray2[i].x;
             double xbien = Math.abs(xx);
@@ -470,7 +459,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                     int actualHorizontal = myPersonCoordinate.getHorizontal();
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
-                    if (actualVertical >= lastVertical - 80 && actualVertical <= lastVertical + 80 && actualHorizontal >= lastHorizontal - 80 && actualHorizontal <= lastHorizontal + 80) {
+                    if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
                         if (actualHorizontal > limitZones*7) {
                             zone8 = 1;
                         }
@@ -499,10 +488,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                         // Here comes coordinated which belongs to the real object detected
                         counterFrames++;
                         personTestCoordinates.add(myPersonCoordinate);
-                        if (actualHorizontal < (limitZones*5)/2) {
-                            evaluateUpPassager();
-                            // function to evaluate
-                        }
 
                         if (actualHorizontal > (limitZones*11)/2) {
                             evaluateDownPassager();
@@ -527,7 +512,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                             zone6 = 0;
                             zone7 = 0;
                             zone8 = 0;
-
                         }
                         // Un contador que si llega a cierto numero dispara el evento de limpiar el array
 
@@ -544,7 +528,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     // In this function it is validated if the person made the trip to get off the bus
     public void evaluateDownPassager() {
 
-        int average = (zone1 + zone2 + zone3 + zone4 + zone5);
+        int average = (zone1 + zone2 + zone3 + zone4 + zone5 + zone6);
         if (average >= 1) {
             counterDown++;
             personTestCoordinates.clear();
@@ -563,7 +547,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
     public void evaluateUpPassager() {
 
-        int average = (zone8 + zone7 + zone6 + zone5 + zone4);
+        int average = (zone8 + zone7 + zone6 + zone5 + zone4 + zone3);
         if (average >= 1) {
             counterUp++;
             personTestCoordinates.clear();
