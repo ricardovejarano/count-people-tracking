@@ -177,7 +177,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     public void onCameraViewStarted(int width, int height) {
         widthResolution = width;
         heigthResolution = height;
-        limitZones = widthResolution/8;
+        limitZones = widthResolution / 8;
         mGray = new Mat();
         mRgba = new Mat();
         mRgba2 = new Mat();
@@ -196,89 +196,90 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         Core.flip(mGray, mGray2, 1);
         Core.flip(mRgba, mRgba2, 1);
 
-        int x1 = (limitZones*11)/2 ;
+        int x1 = (limitZones * 11) / 2;
         int y1 = heigthResolution;
-        int x2 = (limitZones*5)/2 ;
+        int x2 = (limitZones * 5) / 2;
         int y2 = heigthResolution;
 
-        // se dibujan las Zonas de desición
-        Imgproc.line(mRgba, new Point(limitZones*1, 0), new Point(limitZones*1, y1), new Scalar(255, 255, 0), 1);
-        Imgproc.line(mRgba, new Point(limitZones*2, 0), new Point(limitZones*2, y1), new Scalar(255, 255, 0), 1);
-        Imgproc.line(mRgba, new Point(limitZones*3, 0), new Point(limitZones*3, y1), new Scalar(255, 255, 0), 1);
-        Imgproc.line(mRgba, new Point(limitZones*4, 0), new Point(limitZones*4, y1), new Scalar(255, 255, 0), 1);
-        Imgproc.line(mRgba, new Point(limitZones*5, 0), new Point(limitZones*5, y1), new Scalar(255, 255, 0), 1);
-        Imgproc.line(mRgba, new Point(limitZones*6, 0), new Point(limitZones*6, y1), new Scalar(255, 255, 0), 1);
-        Imgproc.line(mRgba, new Point(limitZones*7, 0), new Point(limitZones*7, y1), new Scalar(255, 255, 0), 1);
-
-
+        // Se dibujan las zonas de desición
+        Imgproc.line(mRgba, new Point(limitZones * 1, 0), new Point(limitZones * 1, y1), new Scalar(255, 255, 0), 1);
+        Imgproc.line(mRgba, new Point(limitZones * 2, 0), new Point(limitZones * 2, y1), new Scalar(255, 255, 0), 1);
+        Imgproc.line(mRgba, new Point(limitZones * 3, 0), new Point(limitZones * 3, y1), new Scalar(255, 255, 0), 1);
+        Imgproc.line(mRgba, new Point(limitZones * 4, 0), new Point(limitZones * 4, y1), new Scalar(255, 255, 0), 1);
+        Imgproc.line(mRgba, new Point(limitZones * 5, 0), new Point(limitZones * 5, y1), new Scalar(255, 255, 0), 1);
+        Imgproc.line(mRgba, new Point(limitZones * 6, 0), new Point(limitZones * 6, y1), new Scalar(255, 255, 0), 1);
+        Imgproc.line(mRgba, new Point(limitZones * 7, 0), new Point(limitZones * 7, y1), new Scalar(255, 255, 0), 1);
+        // Se dibujan los dos límites de conteo
         Imgproc.line(mRgba, new Point(x1, 0), new Point(x1, y1), new Scalar(255, 0, 0), 3);
         Imgproc.line(mRgba, new Point(x2, 0), new Point(x2, y2), new Scalar(0, 255, 0), 3);
+
+        // =================  SECCIÓN DBD (Dibujo de datos)=> SE DIBUJAN LOS DATOS DE INTERÉS EN PANTALL ============================================//
 
         Imgproc.putText(mRgba, "Up: " + counterUp,
                 new Point(20, 60),
                 Core.FONT_HERSHEY_SIMPLEX, 1.6, new Scalar(0, 255, 0,
                         255));
-
         Imgproc.putText(mRgba, "Down: " + counterDown,
-                new Point((limitZones*6)+ 10, 60),
+                new Point((limitZones * 6) + 10, 60),
                 Core.FONT_HERSHEY_SIMPLEX, 1.6, new Scalar(255, 0, 0,
                         255));
-
         Imgproc.putText(mRgba, "Frames: " + counterFrames,
                 new Point(20, 120),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         // =====================CONTADORES DE ZONAS ===========================================//
         Imgproc.putText(mRgba, "Zona1: " + zone1,
                 new Point(20, 150),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona2: " + zone2,
                 new Point(20, 180),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona3: " + zone3,
                 new Point(20, 210),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona4: " + zone4,
                 new Point(20, 240),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona5: " + zone5,
                 new Point(20, 270),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona6: " + zone6,
                 new Point(20, 300),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona7: " + zone7,
                 new Point(20, 330),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "Zona8: " + zone8,
                 new Point(20, 360),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "WIDTH: " + widthRec,
                 new Point(20, 390),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
 
         Imgproc.putText(mRgba, "REFRESH: " + counterRefresh,
                 new Point(20, 420),
-                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(0, 0, 0,
+                Core.FONT_HERSHEY_SIMPLEX, 0.9, new Scalar(255, 255, 255,
                         255));
+        //============================ FIN DE LA SECCIÓN DBT ==========================================================//
+
 
         if (mAbsoluteFaceSize == 0) {
             int height = mGray.rows();
@@ -290,29 +291,36 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         MatOfRect faces = new MatOfRect();
         MatOfRect faces2 = new MatOfRect();
 
-        // Left
+        // ================================= SECCIÓN DT (detección) ==========================================//
+
+        // SE DETECTA EL PERFIL IZQUIERDO POR MEDIO DEL INPUTFRAME mGray
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
                 Log.e("detector1", "Entra a detector1");
-            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
 
-        // Perfil  izquierdo
+        // SE DETECTA EL PERFIL DERECHO POR MEDIO DEL INPUTFRAME mGray2
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
-            mJavaDetector.detectMultiScale(mGray2, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+                mJavaDetector.detectMultiScale(mGray2, faces2, 1.1, 2, 2,
+                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
 
-        Rect[] facesArray = faces.toArray();
-        Rect[] facesArray2 = faces2.toArray();
+        //============================ FIN DE LA SECCIÓN DT ====================================================//
+
+        // SE ALMACENAN LAS DETECCIÓNES EN UN ARRAY DE DIPO Rect[]
+        Rect[] facesArray = faces.toArray();     // IZQUIERDO
+        Rect[] facesArray2 = faces2.toArray();   // DERECHO
+
+
+        //================================== CICLO PARA EL PERFIL IZQUIERDO ====================================//
         for (int i = 0; i < facesArray.length; i++) {
-            Log.e("FacesArray", String.valueOf(facesArray.length));
             widthRec = facesArray[i].width;
             Imgproc.rectangle(mRgba, facesArray[i].tl(), facesArray[i].br(),
                     FACE_RECT_COLOR, 3);
@@ -332,87 +340,69 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             myPersonCoordinate.setHorizontal(facesArray[i].x);
             myPersonCoordinate.setVertical(facesArray[i].y);
 
-            if (personCoordinates.size() != 0) {
-                // personCoordinates.add(myPersonCoordinate);
+
+            if (personTestCoordinates.size() == 0) {
+                personTestCoordinates.add(myPersonCoordinate);
             } else {
-                if (personTestCoordinates.size() == 0) {
-                    personTestCoordinates.add(myPersonCoordinate);
+                int lastPosition = personTestCoordinates.size() - 1; // Se encuentra el último indice del array personTestCoordinates
+
+                int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // Último valor en la coordenada Y
+                int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // Último valor en la coordenada X
+
+                int actualVertical = myPersonCoordinate.getVertical();  // Valor en la coordenada X de la toma actual
+                int actualHorizontal = myPersonCoordinate.getHorizontal(); // Valor en la coordenada Y de la toma actual
+
+                // Se verifica que la detección actual está cerca por lo menos a  una distancia de la variable distance
+                int distance = 140;
+                if (actualVertical >= lastVertical - distance && actualVertical <= lastVertical + distance &&
+                        actualHorizontal >= lastHorizontal - distance && actualHorizontal <= lastHorizontal + distance) {
+                    if (actualHorizontal > limitZones * 7) {
+                        zone8 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 6 && actualHorizontal < limitZones * 7) {
+                        zone7 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 5 && actualHorizontal < limitZones * 6) {
+                        zone6 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 4 && actualHorizontal < limitZones * 5) {
+                        zone5 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 3 && actualHorizontal < limitZones * 4) {
+                        zone4 = 1;
+                    }
+                    if (actualHorizontal > limitZones * 2 && actualHorizontal < limitZones * 3) {
+                        zone3 = 1;
+                    }
+                    if (actualHorizontal > limitZones && actualHorizontal < limitZones * 2) {
+                        zone2 = 1;
+                    }
+                    if (actualHorizontal < limitZones) {
+                        zone1 = 1;
+                    }
+                    counterFrames++; // Se aumenta el contador de frames una vez se determina la zona que se aumenta
+                    personTestCoordinates.add(myPersonCoordinate); // Se agrega la coordenada al array personTestCoordinates
+
+                    if (actualHorizontal < (limitZones * 5) / 2) {
+                        evaluateUpPassager(); // function to evaluate
+                    }
+
+                    widthRecSaved = widthRec;
                 } else {
-
-                    // In this else it is necessary to evaluate if the previous detected frame has in common
-                    // similar coordinates with the new capture
-                    int sizeArray = 1;
-
-                    int lastPosition = 0;
-                    lastPosition = personTestCoordinates.size() - 1;
-                    int lastVertical = personTestCoordinates.get(lastPosition).getVertical();  // last value of the horizontal coordinate
-                    int lastHorizontal = personTestCoordinates.get(lastPosition).getHorizontal(); // last value of the vertical coordinate
-                    int actualVertical = myPersonCoordinate.getVertical();
-                    int actualHorizontal = myPersonCoordinate.getHorizontal();
-
-                    // This conditional determine if the actual vertical value is near of the pervious value saved
-                    if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
-                        if (actualHorizontal > limitZones*7) {
-                            zone8 = 1;
-                        }
-                        if (actualHorizontal > limitZones*6 && actualHorizontal < limitZones*7) {
-                            zone7 = 1;
-                        }
-                        if (actualHorizontal > limitZones*5 && actualHorizontal < limitZones*6) {
-                            zone6 = 1;
-                        }
-                        if (actualHorizontal > limitZones*4 && actualHorizontal < limitZones*5) {
-                            zone5 = 1;
-                        }
-                        if (actualHorizontal > limitZones*3 && actualHorizontal < limitZones*4) {
-                            zone4 = 1;
-                        }
-                        if (actualHorizontal > limitZones*2 && actualHorizontal < limitZones*3) {
-                            zone3 = 1;
-                        }
-                        if (actualHorizontal > limitZones*1 && actualHorizontal < limitZones*2) {
-                            zone2 = 1;
-                        }
-                        if (actualHorizontal < limitZones*1) {
-                            zone1 = 1;
-                        }
-
-                        // Here comes coordinated which belongs to the real object detected
-                        counterFrames++;
-                        personTestCoordinates.add(myPersonCoordinate);
-                        if (actualHorizontal < (limitZones*5)/2) {
-                            evaluateUpPassager();
-                            // function to evaluate
-                        }
-
-                        widthRecSaved = widthRec;
-
-                    } else {
-
-                        counterRefresh++;
-
-                        if (counterRefresh > 30) {
-                            personTestCoordinates.clear();
-                            counterRefresh = 0;
-                            counterFrames = 0;
-                            zone1 = 0;
-                            zone2 = 0;
-                            zone3 = 0;
-                            zone4 = 0;
-                            zone5 = 0;
-                            zone6 = 0;
-                            zone7 = 0;
-                            zone8 = 0;
-                        }
-                        // Un contador que si llega a cierto numero dispara el evento de limpiar el array
-
+                    counterRefresh++;// Si la detección no está cerca, un contador para refrescar aumenta
+                    if (counterRefresh > 5) {
+                        personTestCoordinates.clear();
+                        counterRefresh = 0;
+                        counterFrames = 0;
+                        clearZones();
                     }
                 }
             }
-
         }
+        //=============================== FIN DE SECCIÓN PERFIL IZQUIERDO =========================================//
 
-        // Perfil Derecho
+
+        //================================== CICLO PARA EL PERFIL DERECHO ====================================//
         for (int i = 0; i < facesArray2.length; i++) {
             int xx = widthResolution - facesArray2[i].x;
             double xbien = Math.abs(xx);
@@ -460,28 +450,28 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
                     // This conditional determine if the actual vertical value is near of the pervious value saved
                     if (actualVertical >= lastVertical - 140 && actualVertical <= lastVertical + 140 && actualHorizontal >= lastHorizontal - 140 && actualHorizontal <= lastHorizontal + 140) {
-                        if (actualHorizontal > limitZones*7) {
+                        if (actualHorizontal > limitZones * 7) {
                             zone8 = 1;
                         }
-                        if (actualHorizontal > limitZones*6 && actualHorizontal < limitZones*7) {
+                        if (actualHorizontal > limitZones * 6 && actualHorizontal < limitZones * 7) {
                             zone7 = 1;
                         }
-                        if (actualHorizontal > limitZones*5 && actualHorizontal < limitZones*6) {
+                        if (actualHorizontal > limitZones * 5 && actualHorizontal < limitZones * 6) {
                             zone6 = 1;
                         }
-                        if (actualHorizontal > limitZones*4 && actualHorizontal < limitZones*5) {
+                        if (actualHorizontal > limitZones * 4 && actualHorizontal < limitZones * 5) {
                             zone5 = 1;
                         }
-                        if (actualHorizontal > limitZones*3 && actualHorizontal < limitZones*4) {
+                        if (actualHorizontal > limitZones * 3 && actualHorizontal < limitZones * 4) {
                             zone4 = 1;
                         }
-                        if (actualHorizontal > limitZones*2 && actualHorizontal < limitZones*3) {
+                        if (actualHorizontal > limitZones * 2 && actualHorizontal < limitZones * 3) {
                             zone3 = 1;
                         }
-                        if (actualHorizontal > limitZones*1 && actualHorizontal < limitZones*2) {
+                        if (actualHorizontal > limitZones * 1 && actualHorizontal < limitZones * 2) {
                             zone2 = 1;
                         }
-                        if (actualHorizontal < limitZones*1) {
+                        if (actualHorizontal < limitZones * 1) {
                             zone1 = 1;
                         }
 
@@ -489,7 +479,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                         counterFrames++;
                         personTestCoordinates.add(myPersonCoordinate);
 
-                        if (actualHorizontal > (limitZones*11)/2) {
+                        if (actualHorizontal > (limitZones * 11) / 2) {
                             evaluateDownPassager();
                             // function to evaluate
                         }
@@ -504,22 +494,14 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                             personTestCoordinates.clear();
                             counterRefresh = 0;
                             counterFrames = 0;
-                            zone1 = 0;
-                            zone2 = 0;
-                            zone3 = 0;
-                            zone4 = 0;
-                            zone5 = 0;
-                            zone6 = 0;
-                            zone7 = 0;
-                            zone8 = 0;
+                            clearZones();
                         }
                         // Un contador que si llega a cierto numero dispara el evento de limpiar el array
-
                     }
                 }
             }
-
         }
+        //=============================== FIN DE SECCIÓN PERFIL DERECHO =========================================//
 
 
         return mRgba;
@@ -534,34 +516,30 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             personTestCoordinates.clear();
             counterFrames = 0;
             counterRefresh = 0;
-            zone1 = 0;
-            zone2 = 0;
-            zone3 = 0;
-            zone4 = 0;
-            zone5 = 0;
-            zone6 = 0;
-            zone7 = 0;
-            zone8 = 0;
+            clearZones();
         }
     }
 
     public void evaluateUpPassager() {
-
         int average = (zone8 + zone7 + zone6 + zone5 + zone4 + zone3);
         if (average >= 1) {
             counterUp++;
             personTestCoordinates.clear();
             counterFrames = 0;
             counterRefresh = 0;
-            zone1 = 0;
-            zone2 = 0;
-            zone3 = 0;
-            zone4 = 0;
-            zone5 = 0;
-            zone6 = 0;
-            zone7 = 0;
-            zone8 = 0;
+            clearZones();
         }
+    }
+
+    public void clearZones() {
+        zone1 = 0;
+        zone2 = 0;
+        zone3 = 0;
+        zone4 = 0;
+        zone5 = 0;
+        zone6 = 0;
+        zone7 = 0;
+        zone8 = 0;
     }
 
 
