@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Timer;
 
 
 public class OpenCvController extends Activity implements CameraBridgeViewBase.CvCameraViewListener2 {
@@ -57,6 +58,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     int counterDown = 0;
     int counterFrames = 0;
     int counterRefresh = 0;
+    int cameraFrameCounter = 0;
     double xCenter = -1;
     double yCenter = -1;
 
@@ -195,6 +197,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         mGray = inputFrame.gray();
         Core.flip(mGray, mGray2, 1);
         Core.flip(mRgba, mRgba2, 1);
+        if( counterRefresh != 0) {
+            timerCounterRefresh();
+        }
 
         int x1 = (limitZones * 11) / 2;
         int y1 = heigthResolution;
@@ -485,6 +490,13 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
 
         return mRgba;
+    }
+
+    public void timerCounterRefresh() {
+       cameraFrameCounter++;
+       if (cameraFrameCounter == 3) {
+           cameraFrameCounter = 6;
+       }
     }
 
     // In this function it is validated if the person made the trip to get off the bus
