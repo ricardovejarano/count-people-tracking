@@ -35,34 +35,17 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     private static final String TAG = "OCVSample::Activity";
     private static final Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
     public static final int JAVA_DETECTOR = 0;
-    private int learn_frames = 0;
-
     int method = 0;
-
-    // matrix for zooming
-    private Mat mZoomWindow;
-    private Mat mZoomWindow2;
-
-    private MenuItem mItemFace50;
-    private MenuItem mItemFace40;
-    private MenuItem mItemFace30;
-    private MenuItem mItemFace20;
-    // private MenuItem               mItemType;
 
     private Mat mRgba;
     private Mat mRgba2;
     private Mat mGray;
     private Mat mGray2;
     private File mCascadeFile;
-    private File mCascadeFile2;
-    private File mCascadeFileEye;
     private CascadeClassifier mJavaDetector;
-    private CascadeClassifier mJavaDetector2;
-    private CascadeClassifier mJavaDetectorEye;
 
 
     private int mDetectorType = JAVA_DETECTOR;
-    private int mDetectorType2 = JAVA_DETECTOR;
     private String[] mDetectorName;
 
     private float mRelativeFaceSize = 0.2f;
@@ -94,7 +77,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     private int widthRec = 0;
     private int widthRecSaved = 0;
 
-
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -103,21 +85,11 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                     Log.i(TAG, "OpenCV loaded successfully");
 
                     try {
-                        // Se carga el recurso de haar cascade
-                        InputStream is = getResources().openRawResource(R.raw.haarcascade_mcs_leftear);
+                        // Carga de Haarcascade Profileface haarcascade_profileface.xml
+                        InputStream is = getResources().openRawResource(R.raw.haarcascade_profileface);
                         File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "haarcascade_mcs_leftear.xml");
+                        mCascadeFile = new File(cascadeDir, "haarcascade_profileface.xml");
                         FileOutputStream os = new FileOutputStream(mCascadeFile);
-
-
-                        // segunda cascada ///////////
-
-                        // Se carga el recurso de haar cascade
-                        InputStream is2 = getResources().openRawResource(R.raw.haarcascade_profileface);
-                        File cascadeDir2 = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile2 = new File(cascadeDir2, "haarcascade_profileface.xml");
-                        FileOutputStream os2 = new FileOutputStream(mCascadeFile2);
-
 
                         byte[] buffer = new byte[1024];
                         int bytesRead;
@@ -134,24 +106,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
                         } else
                             Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
                         cascadeDir.delete();
-
-                        byte[] buffer2 = new byte[1024];
-                        int bytesRead2;
-
-                        while ((bytesRead2 = is2.read(buffer2)) != -1) {
-                            os2.write(buffer2, 0, bytesRead2);
-                        }
-                        is2.close();
-                        os2.close();
-
-                        mJavaDetector2 = new CascadeClassifier(mCascadeFile2.getAbsolutePath());
-                        if (mJavaDetector2.empty()) {
-                            Log.e(TAG, "Failed to load cascade classifier");
-                            mJavaDetector2 = null;
-                        } else
-                            Log.i(TAG, "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
-                        cascadeDir2.delete();
-
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -227,8 +181,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     public void onCameraViewStopped() {
         mGray.release();
         mRgba.release();
-        mZoomWindow.release();
-        mZoomWindow2.release();
     }
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
@@ -325,9 +277,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
         // Left
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaDetector2 != null)
+            if (mJavaDetector != null)
                 Log.e("detector1", "Entra a detector1");
-            mJavaDetector2.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
@@ -335,10 +287,10 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
         // Perfil de rostro
 
-        if (mDetectorType2 == JAVA_DETECTOR) {
-            if (mJavaDetector2 != null)
+        if (mDetectorType == JAVA_DETECTOR) {
+            if (mJavaDetector != null)
                 Log.e("detector2", "Entra a detector2");
-            mJavaDetector2.detectMultiScale(mGray2, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+            mJavaDetector.detectMultiScale(mGray2, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
