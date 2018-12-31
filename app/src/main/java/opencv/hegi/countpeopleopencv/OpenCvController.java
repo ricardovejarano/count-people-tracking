@@ -50,7 +50,9 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     // private MenuItem               mItemType;
 
     private Mat mRgba;
+    private Mat mRgba2;
     private Mat mGray;
+    private Mat mGray2;
     private File mCascadeFile;
     private File mCascadeFile2;
     private File mCascadeFileEye;
@@ -218,6 +220,8 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     public void onCameraViewStarted(int width, int height) {
         mGray = new Mat();
         mRgba = new Mat();
+        mRgba2 = new Mat();
+        mGray2 = new Mat();
     }
 
     public void onCameraViewStopped() {
@@ -231,6 +235,8 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
 
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
+        Core.flip(mGray, mGray2, 1);
+        Core.flip(mRgba, mRgba2, 1);
         int x1 = 650;
         int y1 = 620;
         int x2 = 350;
@@ -316,7 +322,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         MatOfRect faces = new MatOfRect();
         MatOfRect faces2 = new MatOfRect();
 
-
+/*
         // Left
         if (mDetectorType == JAVA_DETECTOR) {
             if (mJavaDetector != null)
@@ -326,14 +332,14 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
-
+*/
         // Perfil de rostro
 
         if (mDetectorType2 == JAVA_DETECTOR) {
             if (mJavaDetector2 != null)
                 Log.e("detector2", "Entra a detector2");
-                mJavaDetector2.detectMultiScale(mGray, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                        new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            mJavaDetector2.detectMultiScale(mGray2, faces2, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
@@ -457,11 +463,14 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         }
 
         for (int i = 0; i < facesArray2.length; i++) {
-            Log.e("FacesArray", String.valueOf(facesArray2.length));
-            widthRec = facesArray2[i].width;
-            Imgproc.rectangle(mRgba, facesArray2[i].tl(), facesArray2[i].br(),
+            int xx = 960 - facesArray2[i].x;
+            double xbien = Math.abs(xx);
+            Log.e("FacesArrayX", String.valueOf(xbien));
+            Point tlAbs = new Point(Math.abs(960 - facesArray2[i].tl().x), facesArray2[i].tl().y);
+            Point brAbs = new Point(Math.abs(960 - facesArray2[i].br().x), facesArray2[i].br().y);
+            Imgproc.rectangle(mRgba, tlAbs, brAbs,
                     FACE_RECT_COLOR, 3);
-            xCenter = (facesArray2[i].x + facesArray2[i].width + facesArray2[i].x) / 2;
+            xCenter = xbien - (facesArray2[i].width) / 2;
             yCenter = (facesArray2[i].y + facesArray2[i].y + facesArray2[i].height) / 2;
             Point center = new Point(xCenter, yCenter);
 
@@ -476,7 +485,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             PersonCoordinate myPersonCoordinate = new PersonCoordinate();
 
 
-            myPersonCoordinate.setHorizontal(facesArray2[i].x);
+            myPersonCoordinate.setHorizontal(xx);
             myPersonCoordinate.setVertical(facesArray2[i].y);
 
 
@@ -570,7 +579,6 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             }
 
         }
-
 
 
         return mRgba;
