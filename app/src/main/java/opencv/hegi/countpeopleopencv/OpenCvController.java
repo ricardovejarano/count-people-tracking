@@ -322,17 +322,17 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         MatOfRect faces = new MatOfRect();
         MatOfRect faces2 = new MatOfRect();
 
-/*
+
         // Left
         if (mDetectorType == JAVA_DETECTOR) {
-            if (mJavaDetector != null)
+            if (mJavaDetector2 != null)
                 Log.e("detector1", "Entra a detector1");
-            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+            mJavaDetector2.detectMultiScale(mGray, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
                     new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
         } else {
             Log.e(TAG, "Detection method is not selected!");
         }
-*/
+
         // Perfil de rostro
 
         if (mDetectorType2 == JAVA_DETECTOR) {
