@@ -81,6 +81,7 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
     private int heigthResolution = 0;
 
     private int limitZones = 0;
+    private int counterObstruction = 0;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -212,11 +213,11 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
         Imgproc.findContours(mRgbaTest, contours, hierarchy, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         Log.d("contornos", String.valueOf(contours.size()));
         MediaPlayer player = MediaPlayer.create(this, R.raw.camera_alert);
-        if (contours.size() > 30) {
+        if (contours.size() > 0) {
 
             player.stop();
 
-
+            counterObstruction = 0;
             int x1 = (limitZones * 11) / 2;
             int y1 = heigthResolution;
             int x2 = (limitZones * 5) / 2;
@@ -512,7 +513,10 @@ public class OpenCvController extends Activity implements CameraBridgeViewBase.C
             //return mRgba;
 
         } else {
-            player.start();
+            counterObstruction++;
+            if (counterObstruction > 5) {
+                player.start();
+            }
         }
 
         return mRgba;
